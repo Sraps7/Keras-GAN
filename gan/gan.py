@@ -14,6 +14,7 @@ import sys
 
 import numpy as np
 
+
 class GAN():
     def __init__(self):
         self.img_rows = 28
@@ -27,14 +28,14 @@ class GAN():
         # Build and compile the discriminator
         self.discriminator = self.build_discriminator()
         self.discriminator.compile(loss='binary_crossentropy',
-            optimizer=optimizer,
-            metrics=['accuracy'])
+                                   optimizer=optimizer,
+                                   metrics=['accuracy'])
 
         # Build the generator
         self.generator = self.build_generator()
 
         # The generator takes noise as input and generates imgs
-        z = Input(shape=(self.latent_dim,))
+        z = Input(shape=(self.latent_dim, ))
         img = self.generator(z)
 
         # For the combined model we will only train the generator
@@ -47,7 +48,6 @@ class GAN():
         # Trains the generator to fool the discriminator
         self.combined = Model(z, validity)
         self.combined.compile(loss='binary_crossentropy', optimizer=optimizer)
-
 
     def build_generator(self):
 
@@ -67,7 +67,7 @@ class GAN():
 
         model.summary()
 
-        noise = Input(shape=(self.latent_dim,))
+        noise = Input(shape=(self.latent_dim, ))
         img = model(noise)
 
         return Model(noise, img)
@@ -132,7 +132,8 @@ class GAN():
             g_loss = self.combined.train_on_batch(noise, valid)
 
             # Plot the progress
-            print ("%d [D loss: %f, acc.: %.2f%%] [G loss: %f]" % (epoch, d_loss[0], 100*d_loss[1], g_loss))
+            print("%d [D loss: %f, acc.: %.2f%%] [G loss: %f]" %
+                  (epoch, d_loss[0], 100 * d_loss[1], g_loss))
 
             # If at save interval => save generated image samples
             if epoch % sample_interval == 0:
@@ -150,8 +151,8 @@ class GAN():
         cnt = 0
         for i in range(r):
             for j in range(c):
-                axs[i,j].imshow(gen_imgs[cnt, :,:,0], cmap='gray')
-                axs[i,j].axis('off')
+                axs[i, j].imshow(gen_imgs[cnt, :, :, 0], cmap='gray')
+                axs[i, j].axis('off')
                 cnt += 1
         fig.savefig("images/%d.png" % epoch)
         plt.close()
